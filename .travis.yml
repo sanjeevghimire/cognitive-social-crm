@@ -4,10 +4,10 @@ node_js:
 install:
   - npm run app-install
 script:
-  - npm run test:client
-  - npm run test:server
   - npm run pretest:client
   - npm run pretest:server
+  - npm run test:client
+  - npm run test:server  
 cache:
   directories:
     - node_modules   
