@@ -1,4 +1,8 @@
-const Cloudant = require('@cloudant/cloudant')
+const Cloudant = require('@cloudant/cloudant');
+const TweeterListener = require('../service/TweeterListener');
+const tweets = require('../data/SampleTweets');
+const CloudantDAO  = require("../dao/CloudantDAO");
+const config = require('../config/')
 /**
  * This utility can be used to initialize, check and load a cloudant database for you.
  *
@@ -10,6 +14,13 @@ class CloudantInitializer {
         // Initialize Cloudant
         this.connection = Cloudant({ account: _username, password: _password });
         this.config = _config;
+
+        // initialize twitter listener
+        let twitOptions = {}
+        twitOptions.max = 1;
+        twitOptions.outputType = "json";
+        this.tweeterListener = TweeterListener.TweeterListener.getInstance(twitOptions);        
+        this.cloudantDAO = new CloudantDAO.CloudantDAO(this.connection, config.default.cloudant_db);
     }
     /** Check Cloudant against the cloudant-config.json file.
      */
@@ -397,7 +408,15 @@ class CloudantInitializer {
                     this.syncCloudantConfig(checkResult).then((createResult) => {
                         this.printCheckResults(createResult)
                         console.log('*** Synchronization completed. ***')
-                        resolve()
+                        setTimeout(() => {
+                            this.insertSampleTweets().then(() => {
+                                console.log("*** Sample tweet data inserted successfully. ***");
+                                resolve()
+                            }).catch((err) => {
+                                console.log("*** Error while saving sample tweets to database ***");
+                                reject(err);
+                            });
+                        }, 3000);
                     })
                 } else {
                     this.printCheckResults(checkResult)
@@ -408,10 +427,47 @@ class CloudantInitializer {
                 console.log(err)
                 reject()
             })
-        })
+        });
     }
 
 
+    /**
+     * insert sample tweets
+     * @param {*} tweets 
+     */
+    insertSampleTweets() {
+        return new Promise((resolve, reject) => {
+            try {
+                var i = 1;
+                for (const tweet of tweets.default) {
+                    //needed to add these as sample tweets don't haec all the details                    
+                    tweet.post_by = 'system';
+                    tweet.source = 'system';
+                    tweet.tweet_id = i++;
+                    this.tweeterListener.enrichmentPromise(tweet).then((enrichedData) => {                                                
+                        // Then save it to something...
+                        this.cloudantDAO.saveToCloudant(enrichedData, false).then(() => {
+                            console.log("*** Saved "+ enrichedData +" to the database.")
+                        }).catch((err) => {
+                            console.log("Error saving to " + this.options.saveType + ": " + err);
+                        });                        
+                    }).catch((err) => {
+                        this.status.lastError = err;
+                        this.status.errors++;
+                        // If it's not an unsupported text language error, then we pause the listener.
+                        if (err.indexOf("unsupported text language") === -1) {
+                            console.log("An Enrichment error occurred, the listener is being paused for 15 minutes to see if it resolved the problem.");
+                            this.pauseListener(15);
+                        }
+                    });
+                }
+                resolve();
+            } catch (err) {
+                console.log('Error in saving tweets to database : ' + err)
+                reject(err);
+            }
+        });
+    }
 }
 
 module.exports = CloudantInitializer

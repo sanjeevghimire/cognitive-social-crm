@@ -77,25 +77,25 @@ export class CloudantDAO {
         });
     }
 
-    saveToCloudant(data: any, force: boolean) {
+    saveToCloudant(data: any, force: boolean) {        
         return new Promise((resolve, reject) => {
             try {
                 if (data && data.text) {
                     this.bulkSaveBuffer.docs.push(data);
                 }
-                this.LOGGER.info("Length of Buffer: : " + this.bulkSaveBuffer.docs.length);
+                this.LOGGER.debug("Length of Buffer: : " + this.bulkSaveBuffer.docs.length);
                 // If the bulk buffer threshold is reached, or the force flag is true,
                 // Then save the buffer to cloudant.
                 if (this.bulkSaveBuffer.docs.length >= this.maxBufferSize || force) {
                     // Throttle the save to not exceed Cloudant free plan limits
-                    this.LOGGER.info("Saving to Cloudant...");
+                    this.LOGGER.debug("Saving to Cloudant...");
                     setTimeout(() => {
                         // Save the meta data to Cloudant
                         this.cloudantDB.bulk(this.bulkSaveBuffer, (err, result) => {
                             if (err) {
                                 reject(err);
                             } else {
-                                this.LOGGER.info("Successfully saved " + this.bulkSaveBuffer.docs.length + " docs to Cloudant.");
+                                this.LOGGER.debug("Successfully saved " + this.bulkSaveBuffer.docs.length + " docs to Cloudant.");
                                 this.bulkSaveBuffer.docs = [];
                                 resolve();
                             }

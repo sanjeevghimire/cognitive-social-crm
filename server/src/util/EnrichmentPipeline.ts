@@ -13,6 +13,11 @@ export class EnrichmentPipeline {
 
     private nlu: watson.NaturalLanguageUnderstandingV1;
     private toneAnalyzer: watson.ToneAnalyzerV3;
+    private conversation: watson.ConversationV1;
+
+    private conversationParams: any = {
+        "workspace_id": config.conversationClassificationId
+    }
 
     private nluParams: any = {
         "features": {
@@ -41,12 +46,16 @@ export class EnrichmentPipeline {
         this.toneAnalyzer = new watson.ToneAnalyzerV3({
             version: "2017-09-21"
         });
+
+        this.conversation = new watson.ConversationV1({
+            version: "2018-07-10"
+        })
     }
 
     enrich(text: string) {
         return new Promise((resolve, reject) => {
             try {
-                const enrichmentPromises = [this.nluEnrichment(text), this.toneEnrichment(text)];
+                const enrichmentPromises = [this.nluEnrichment(text), this.toneEnrichment(text), this.conversationEnrichment(text)];
                 Promise.all(enrichmentPromises).then((enrichments) => {
                     const response: { [index: string]: any } = {};
                     for (const e of enrichments) {
@@ -97,6 +106,25 @@ export class EnrichmentPipeline {
                 reject(err);
             }
         });
+    }
+
+    conversationEnrichment(text: string) {
+        return new Promise((resolve, reject) => {
+            try {
+                this.conversationParams.input = {}
+                this.conversationParams.input.text = text
+                this.LOGGER.info(JSON.stringify(this.conversationParams));
+                this.conversation.message(this.conversationParams, (err: any, success: any) => {
+                    if (err) {
+                        this.LOGGER.error('Conversation: ' + err)
+                        return reject('Conversation: ' + err)
+                    }
+                    resolve({ intents: success.intents })
+                })
+            } catch (err) {
+                reject(err)
+            }
+        })
     }
 
 

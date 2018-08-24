@@ -24,6 +24,7 @@ let config = {
     consumer_secret: process.env.TWITTER_CONSUMER_SECRET,
     access_token: process.env.TWITTER_ACCESS_TOKEN,
     access_token_secret: process.env.TWITTER_ACCESS_SECRET,
+    conversationClassificationId: process.env.ASSISTANT_CLASSIFICATION_WORKSPACE_ID,
     isLocal: true
 
 };

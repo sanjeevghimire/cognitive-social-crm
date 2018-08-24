@@ -1,4 +1,4 @@
-{
+const cloudantConfig = {
     "db-definitions": {
         "analysis-db": {
             "design": [
@@ -88,4 +88,6 @@
             ]
         }
     }
-}
+};
+
+export default cloudantConfig;

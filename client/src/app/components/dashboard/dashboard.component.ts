@@ -41,8 +41,8 @@ export class DashboardComponent implements OnInit {
   public options: CloudOptions;
 
   constructor(private analysisService: AnalysisService,
-              private tweeterService: TweeterService,
-              private uiConfiguration: UIConfiguration) { }
+    private tweeterService: TweeterService,
+    private uiConfiguration: UIConfiguration) { }
 
   ngOnInit() {
 
@@ -84,6 +84,7 @@ export class DashboardComponent implements OnInit {
 
   loadSentimentSummary() {
     this.analysisService.getSentimentSummary().subscribe((sentiments) => {
+      console.log(JSON.stringify(sentiments));
       this.positiveTweets = sentiments.positive == null ? 0 : sentiments.positive;
       this.negativeTweets = sentiments.negative == null ? 0 : sentiments.negative;
     });
@@ -244,7 +245,7 @@ export class DashboardComponent implements OnInit {
       let top_score = 0;
       let top_tone = 'anger';
       for (const t of toneCategories) {
-        if (t.score > top_score) {
+        if (t.score > top_score && this.uiConfiguration.TONE.includes(t.tone_id)) {
           top_score = t.score;
           top_tone = t.tone_id;
         }
@@ -284,11 +285,6 @@ export class DashboardComponent implements OnInit {
           data: sentiments.anger,
           label: 'Anger',
           borderColor: '#DC3545',
-          fill: false
-        }, {
-          data: sentiments.disgust,
-          label: 'Disgust',
-          borderColor: '#8e5ea2',
           fill: false
         }, {
           data: sentiments.fear,

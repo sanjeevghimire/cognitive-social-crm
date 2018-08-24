@@ -4,6 +4,7 @@ import { CloudantDAO } from "../dao/CloudantDAO";
 import * as nano from "nano";
 import { SentimentOverTime, ClassificationSummary, SentimentSummary, EmotionalToneOverTime } from "../model/CRMModel";
 import config from "../../src/config";
+import logger from "../util/Logger";
 
 export class AnalysisService {
 
@@ -79,7 +80,7 @@ export class AnalysisService {
             const params = {
                 group: true,
                 descending: true,
-                endkey: [endKey.year(), endKey.month(), endKey.date()]
+                //endkey: [endKey.year(), endKey.month(), endKey.date()]                                
             };
 
             const response: SentimentOverTime = <SentimentOverTime>{};
@@ -162,7 +163,7 @@ export class AnalysisService {
             const params = {
                 group: true,
                 descending: true,
-                endkey: [endKey.year(), endKey.month(), endKey.date()]
+                //endkey: [endKey.year(), endKey.month(), endKey.date()]
             };
 
             const response: EmotionalToneOverTime = <EmotionalToneOverTime>{};

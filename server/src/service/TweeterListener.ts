@@ -276,10 +276,10 @@ export class TweeterListener {
             });
         }).catch((err) => {
             if (err) {
-                this.LOGGER.info("Error checking for duplicate: " + err);
+                this.LOGGER.error("Error checking for duplicate: " + err);
                 return;
             }
-            this.LOGGER.info("Tweet is a duplicate");
+            this.LOGGER.error("Tweet is a duplicate");
         });
     }
 
