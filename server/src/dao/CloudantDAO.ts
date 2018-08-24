@@ -77,7 +77,7 @@ export class CloudantDAO {
         });
     }
 
-    saveToCloudant(data: any, force: boolean) {        
+    saveToCloudant(data: any, force: boolean) {
         return new Promise((resolve, reject) => {
             try {
                 if (data && data.text) {

@@ -22,10 +22,10 @@ export class UIConfiguration {
   // The setting that tells the app how often to analysis page should be reloaded.
   STATUS_REFRESH_DELAY = 60000;
 
-  TONE = ['anger','sadness','fear','joy'];
+  TONE = ['anger', 'sadness', 'fear', 'joy'];
 
   TONE_ICONS = {
-    anger: emoji.get('rage'),    
+    anger: emoji.get('rage'),
     sadness: emoji.get('frowning'),
     fear: emoji.get('fearful'),
     joy: emoji.get('smile')

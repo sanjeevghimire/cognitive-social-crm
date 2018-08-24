@@ -2,21 +2,21 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as cors from "cors";
 import analysisRoutes from "./routes/AnalysisRoute";
-import tweeterRoutes from './routes/TweeterRoute';
-import { errorHandler } from './middleware/ErrorHandler';
-import config from './config';
+import tweeterRoutes from "./routes/TweeterRoute";
+import { errorHandler } from "./middleware/ErrorHandler";
+import config from "./config";
 import * as path from "path";
 const CloudantInitializer = require("./setup/cloudant.initializer");
-import cloudantConfig from './data/cloudant.config'
-import { TweeterListener } from './service/TweeterListener';
-import { TwitterOptions } from './model/CRMModel';
-import logger from './util/Logger';
+import cloudantConfig from "./data/cloudant.config";
+import { TweeterListener } from "./service/TweeterListener";
+import { TwitterOptions } from "./model/CRMModel";
+import logger from "./util/Logger";
 
 class App {
 
   constructor() {
     this.app = express();
-    this.cloudantInitializer = new CloudantInitializer(config.cloudant_username, config.cloudant_password,cloudantConfig);
+    this.cloudantInitializer = new CloudantInitializer(config.cloudant_username, config.cloudant_password, cloudantConfig);
     this.config();
     this.routes();
     this.databaseSetup();

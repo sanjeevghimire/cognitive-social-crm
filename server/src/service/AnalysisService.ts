@@ -80,7 +80,7 @@ export class AnalysisService {
             const params = {
                 group: true,
                 descending: true,
-                //endkey: [endKey.year(), endKey.month(), endKey.date()]                                
+                // endkey: [endKey.year(), endKey.month(), endKey.date()]
             };
 
             const response: SentimentOverTime = <SentimentOverTime>{};
@@ -163,7 +163,7 @@ export class AnalysisService {
             const params = {
                 group: true,
                 descending: true,
-                //endkey: [endKey.year(), endKey.month(), endKey.date()]
+                // endkey: [endKey.year(), endKey.month(), endKey.date()]
             };
 
             const response: EmotionalToneOverTime = <EmotionalToneOverTime>{};

@@ -17,7 +17,7 @@ export class EnrichmentPipeline {
 
     private conversationParams: any = {
         "workspace_id": config.conversationClassificationId
-    }
+    };
 
     private nluParams: any = {
         "features": {
@@ -49,7 +49,7 @@ export class EnrichmentPipeline {
 
         this.conversation = new watson.ConversationV1({
             version: "2018-07-10"
-        })
+        });
     }
 
     enrich(text: string) {
@@ -111,20 +111,20 @@ export class EnrichmentPipeline {
     conversationEnrichment(text: string) {
         return new Promise((resolve, reject) => {
             try {
-                this.conversationParams.input = {}
-                this.conversationParams.input.text = text
+                this.conversationParams.input = {};
+                this.conversationParams.input.text = text;
                 this.LOGGER.info(JSON.stringify(this.conversationParams));
                 this.conversation.message(this.conversationParams, (err: any, success: any) => {
                     if (err) {
-                        this.LOGGER.error('Conversation: ' + err)
-                        return reject('Conversation: ' + err)
+                        this.LOGGER.error("Conversation: " + err);
+                        return reject("Conversation: " + err);
                     }
-                    resolve({ intents: success.intents })
-                })
+                    resolve({ intents: success.intents });
+                });
             } catch (err) {
-                reject(err)
+                reject(err);
             }
-        })
+        });
     }
 
 
